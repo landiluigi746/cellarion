@@ -1,0 +1,10 @@
+build/
+bin/
+lib/
+out/
+.vs/
+.vscode/
+CMakeSettings.json
+vendor/*
+!vendor
+.cache/
