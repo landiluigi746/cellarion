@@ -8,3 +8,4 @@ CMakeSettings.json
 vendor/*
 !vendor
 .cache/
+imgui.ini
