@@ -24,7 +24,7 @@ FetchOrFind(raylib https://github.com/landiluigi746/raylib-minimal.git master)
 FetchOrFind(imgui https://github.com/landiluigi746/imgui-cmake.git master)
 FetchOrFind(rlImGui https://github.com/landiluigi746/rlImGui-cmake.git master)
 
-find_package(OpenMP REQUIRED)
+find_package(OpenMP)
 
 if(NOT OpenMP_FOUND)
     set(CELLARION_PARALLEL FALSE)
