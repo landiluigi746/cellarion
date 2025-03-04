@@ -1,6 +1,7 @@
 #include "Application.hpp"
 #include "CellState.hpp"
 #include "Config.hpp"
+#include "automata/Automata.hpp"
 
 #include <raylib.h>
 #include <imgui.h>
@@ -11,8 +12,10 @@
 namespace cellarion
 {
     static_assert(IM_ARRAYSIZE(POSSIBLE_CELL_SIZES) == IM_ARRAYSIZE(POSSIBLE_CELL_SIZES_STR), "Sizes don't match!");
+    static_assert(IM_ARRAYSIZE(POSSIBLE_AUTOMATA) == IM_ARRAYSIZE(POSSIBLE_AUTOMATA_STR), "Sizes don't match");
 
     static int s_SelectedCellSize = IM_ARRAYSIZE(POSSIBLE_CELL_SIZES_STR) - 1;
+    static int s_SelectedAutomata = 0;
 
     Application::Application() :
         m_Grid(CANVAS_HEIGHT / POSSIBLE_CELL_SIZES[s_SelectedCellSize], CANVAS_WIDTH / POSSIBLE_CELL_SIZES[s_SelectedCellSize])
@@ -26,6 +29,8 @@ namespace cellarion
         SetupImGuiStyle();
 
         m_Canvas = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        /*
         m_Grid.SetUpdateCallback([](const Grid& oldg, Grid& newg) {
             size_t rows = oldg.GetRows();
             size_t cols = oldg.GetCols();
@@ -35,6 +40,9 @@ namespace cellarion
                 for(size_t x = 0; x < cols; ++x)
                     newg.At(x, y) = (CellState)(rand() % 2);
         });
+        */
+
+        m_Grid.SetUpdateCallback(POSSIBLE_AUTOMATA[s_SelectedAutomata]);
     }
 
     Application::~Application()
@@ -155,9 +163,22 @@ namespace cellarion
             m_Grid.Update();
 
             auto end = std::chrono::high_resolution_clock::now();
-            double elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+            long elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+            if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), Rectangle{0, 0, CANVAS_WIDTH, CANVAS_HEIGHT}))
+            {
+                Vector2 mousePos = GetMousePosition();
+
+                size_t cellX = (mousePos.x / POSSIBLE_CELL_SIZES[s_SelectedCellSize]);
+                size_t cellY = (mousePos.y / POSSIBLE_CELL_SIZES[s_SelectedCellSize]);
+
+                CellState& cell = m_Grid.At(cellX, cellY);
+
+                cell = (cell == CellState::DEAD) ? CellState::ALIVE : CellState::DEAD;
+            }
 
             BeginTextureMode(m_Canvas);
+            ClearBackground(DARKGRAY);
             m_Grid.Draw(POSSIBLE_CELL_SIZES[s_SelectedCellSize]);
             EndTextureMode();
 
@@ -170,10 +191,36 @@ namespace cellarion
 
             ImGui::SetNextWindowPos(ImVec2(CANVAS_WIDTH, 0));
             ImGui::SetNextWindowSize(ImVec2(WINDOW_WIDTH - CANVAS_WIDTH, WINDOW_HEIGHT));
-            ImGui::Begin("Cellarion Config", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+            ImGui::Begin("Cellarion", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 
-            ImGui::Text("Update time: %lf", elapsed);
-            // ImGui::Combo("Cell size", &s_SelectedCellSize, POSSIBLE_CELL_SIZES_STR, (int)IM_ARRAYSIZE(POSSIBLE_CELL_SIZES));
+            ImGui::Text("Current automata: %s", POSSIBLE_AUTOMATA_STR[s_SelectedAutomata]);
+            ImGui::NewLine();
+
+            ImGui::Text("Stats");
+            ImGui::Separator();
+
+            ImGui::Text("Update time: %ld microseconds", elapsed);
+            ImGui::Text("FPS: %d", GetFPS());
+            ImGui::Text("Frame time: %f", GetFrameTime());
+
+            ImGui::NewLine();
+
+            ImGui::Text("Settings");
+            ImGui::Separator();
+
+            if(ImGui::Combo("Cell size", &s_SelectedCellSize, POSSIBLE_CELL_SIZES_STR, (int)IM_ARRAYSIZE(POSSIBLE_CELL_SIZES)))
+                m_Grid.Resize(CANVAS_HEIGHT / POSSIBLE_CELL_SIZES[s_SelectedCellSize], CANVAS_WIDTH / POSSIBLE_CELL_SIZES[s_SelectedCellSize]);
+
+            ImGui::NewLine();
+            ImGui::Separator();
+
+            if(ImGui::Button((m_Grid.IsPaused() ? "Play" : "Pause")))
+                m_Grid.TogglePause();
+
+            ImGui::SameLine();
+
+            if(ImGui::Button("Reset"))
+                m_Grid.Reset();
 
             ImGui::End();
 

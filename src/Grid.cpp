@@ -7,6 +7,7 @@
 namespace cellarion
 {
     Grid::Grid(size_t rows, size_t cols) :
+        m_Paused(true),
         m_Rows(rows),
         m_Cols(cols),
         m_Cells(rows * cols, CellState::DEAD)
@@ -14,6 +15,9 @@ namespace cellarion
 
     void Grid::Update()
     {
+        if(m_Paused)
+            return;
+
         Grid newGrid(m_Rows, m_Cols);
 
         if(m_UpdateCallback)
@@ -40,7 +44,7 @@ namespace cellarion
         if(m_Rows == rows && m_Cols == cols)
             return;
 
-        std::vector<CellState> newCells;
+        std::vector<CellState> newCells(rows * cols, CellState::DEAD);
         size_t minRows = std::min(rows, m_Rows);
         size_t minCols = std::min(cols, m_Cols);
 
@@ -49,6 +53,8 @@ namespace cellarion
                 newCells[i * minCols + j] = m_Cells[i * minCols + j];
 
         m_Cells = std::move(newCells);
+        m_Rows = rows;
+        m_Cols = cols;
     }
 
     void Grid::Reset()
