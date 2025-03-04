@@ -1,25 +1,46 @@
 #include "Application.hpp"
+#include "CellState.hpp"
+#include "Config.hpp"
 
 #include <raylib.h>
 #include <imgui.h>
 #include <rlImGui.h>
+#include <cstring>
+#include <chrono>
 
 namespace cellarion
 {
-    static constexpr int WINDOW_WIDTH = 1280;
-    static constexpr int WINDOW_HEIGHT = 720;
+    static_assert(IM_ARRAYSIZE(POSSIBLE_CELL_SIZES) == IM_ARRAYSIZE(POSSIBLE_CELL_SIZES_STR), "Sizes don't match!");
 
-    Application::Application()
+    static int s_SelectedCellSize = IM_ARRAYSIZE(POSSIBLE_CELL_SIZES_STR) - 1;
+
+    Application::Application() :
+        m_Grid(CANVAS_HEIGHT / POSSIBLE_CELL_SIZES[s_SelectedCellSize], CANVAS_WIDTH / POSSIBLE_CELL_SIZES[s_SelectedCellSize])
     {
-        InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "raylib-Extras [ImGui] example - simple ImGui Demo");
+        InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cellarion");
         rlImGuiSetup(true);
+
+        TraceLog(LOG_INFO, "Here");
 
         SetupImGuiFont();
         SetupImGuiStyle();
+
+        m_Canvas = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
+        m_Grid.SetUpdateCallback([](const Grid& oldg, Grid& newg) {
+            size_t rows = oldg.GetRows();
+            size_t cols = oldg.GetCols();
+
+            // epilepsy warning!
+            for(size_t y = 0; y < rows; ++y)
+                for(size_t x = 0; x < cols; ++x)
+                    newg.At(x, y) = (CellState)(rand() % 2);
+        });
     }
 
     Application::~Application()
     {
+        UnloadRenderTexture(m_Canvas);
+
         rlImGuiShutdown();
         CloseWindow();
     }
@@ -27,6 +48,8 @@ namespace cellarion
     void Application::SetupImGuiFont()
     {
         ImGuiIO& io = ImGui::GetIO();
+
+        io.Fonts->ClearFonts();
         io.FontDefault = io.Fonts->AddFontFromFileTTF("res/pt-root-ui_regular.ttf", 18.0f);
 
         rlImGuiReloadFonts();
@@ -40,7 +63,7 @@ namespace cellarion
         style.Alpha = 1.0f;
         style.DisabledAlpha = 0.6000000238418579f;
         style.WindowPadding = ImVec2(8.0f, 8.0f);
-        style.WindowRounding = 7.0f;
+        style.WindowRounding = 0.0f;
         style.WindowBorderSize = 1.0f;
         style.WindowMinSize = ImVec2(32.0f, 32.0f);
         style.WindowTitleAlign = ImVec2(0.0f, 0.5f);
@@ -127,11 +150,32 @@ namespace cellarion
     {
         while (!WindowShouldClose())
         {
+            auto start = std::chrono::high_resolution_clock::now();
+
+            m_Grid.Update();
+
+            auto end = std::chrono::high_resolution_clock::now();
+            double elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+            BeginTextureMode(m_Canvas);
+            m_Grid.Draw(POSSIBLE_CELL_SIZES[s_SelectedCellSize]);
+            EndTextureMode();
+
             BeginDrawing();
             ClearBackground(DARKGRAY);
+
+            DrawTextureRec(m_Canvas.texture, Rectangle{0, 0, (float)m_Canvas.texture.width, (float)-m_Canvas.texture.height}, Vector2{ 0, 0 }, WHITE);
+
             rlImGuiBegin();
 
-            ImGui::ShowDemoWindow();
+            ImGui::SetNextWindowPos(ImVec2(CANVAS_WIDTH, 0));
+            ImGui::SetNextWindowSize(ImVec2(WINDOW_WIDTH - CANVAS_WIDTH, WINDOW_HEIGHT));
+            ImGui::Begin("Cellarion Config", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+
+            ImGui::Text("Update time: %lf", elapsed);
+            // ImGui::Combo("Cell size", &s_SelectedCellSize, POSSIBLE_CELL_SIZES_STR, (int)IM_ARRAYSIZE(POSSIBLE_CELL_SIZES));
+
+            ImGui::End();
 
             rlImGuiEnd();
             EndDrawing();

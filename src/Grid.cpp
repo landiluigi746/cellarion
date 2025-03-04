@@ -1,0 +1,58 @@
+#include "Grid.hpp"
+#include "CellState.hpp"
+
+#include <raylib.h>
+#include <vector>
+
+namespace cellarion
+{
+    Grid::Grid(size_t rows, size_t cols) :
+        m_Rows(rows),
+        m_Cols(cols),
+        m_Cells(rows * cols, CellState::DEAD)
+    {}
+
+    void Grid::Update()
+    {
+        Grid newGrid(m_Rows, m_Cols);
+
+        if(m_UpdateCallback)
+            m_UpdateCallback(*this, newGrid);
+
+        m_Cells.swap(newGrid.m_Cells);
+    }
+
+    void Grid::Draw(size_t cellSize)
+    {
+        for(size_t i = 0; i < m_Rows; ++i)
+            for(size_t j = 0; j < m_Cols; ++j)
+                DrawRectangle((int)(j * cellSize), (int)(i * cellSize), (int)(cellSize), (int)(cellSize), CellStateToColor(m_Cells[i * m_Cols + j]));
+    }
+
+    void Grid::SetUpdateCallback(const UpdateCallback& callback)
+    {
+        if(callback)
+            m_UpdateCallback = callback;
+    }
+
+    void Grid::Resize(size_t rows, size_t cols)
+    {
+        if(m_Rows == rows && m_Cols == cols)
+            return;
+
+        std::vector<CellState> newCells;
+        size_t minRows = std::min(rows, m_Rows);
+        size_t minCols = std::min(cols, m_Cols);
+
+        for(size_t i = 0; i < minRows; ++i)
+            for(size_t j = 0; j < minCols; ++j)
+                newCells[i * minCols + j] = m_Cells[i * minCols + j];
+
+        m_Cells = std::move(newCells);
+    }
+
+    void Grid::Reset()
+    {
+        m_Cells.assign(m_Cells.size(), CellState::DEAD);
+    }
+}
