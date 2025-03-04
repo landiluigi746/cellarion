@@ -12,6 +12,23 @@ target_link_libraries(
     PRIVATE rlImGui
 )
 
+if(${CELLARION_PARALLEL})
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+
+    target_compile_definitions(
+        cellarion
+        PRIVATE
+        CELLARION_PARALLEL=1
+    )
+else()
+    target_compile_definitions(
+        cellarion
+        PRIVATE
+        CELLARION_PARALLEL=0
+    )
+endif()
+
 if(MSVC)
     set(OPTIONS_WARNINGS /W4)
 

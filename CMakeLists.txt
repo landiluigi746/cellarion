@@ -22,7 +22,14 @@ include(FetchOrFind)
 
 FetchOrFind(raylib https://github.com/landiluigi746/raylib-minimal.git master)
 FetchOrFind(imgui https://github.com/landiluigi746/imgui-cmake.git master)
-
 FetchOrFind(rlImGui https://github.com/landiluigi746/rlImGui-cmake.git master)
+
+find_package(OpenMP REQUIRED)
+
+if(NOT OpenMP_FOUND)
+    set(CELLARION_PARALLEL FALSE)
+else()
+    set(CELLARION_PARALLEL TRUE)
+endif()
 
 add_subdirectory(src)

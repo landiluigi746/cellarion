@@ -1,5 +1,7 @@
 include(FetchContent)
 
+set(FETCHCONTENT_QUIET FALSE)
+
 function(FetchOrFind dep_name git_repo git_tag)
     if(NOT dep_name OR NOT git_repo OR NOT git_tag)
         message(FATAL_ERROR "Some parameters are missing!")
@@ -14,6 +16,7 @@ function(FetchOrFind dep_name git_repo git_tag)
             ${dep_name}
             GIT_REPOSITORY  ${git_repo}
             GIT_TAG         ${git_tag}
+            GIT_PROGRESS    TRUE
         )
 
         FetchContent_MakeAvailable(${dep_name})

@@ -1,6 +1,8 @@
 #include "automata/Automata.hpp"
 #include "CellState.hpp"
 
+#include <omp.h>
+
 namespace cellarion
 {
     inline int GetAliveNeighbours(const Grid& grid, size_t x, size_t y)
@@ -20,6 +22,9 @@ namespace cellarion
         size_t rows = oldGrid.GetRows();
         size_t cols = oldGrid.GetCols();
 
+        #if CELLARION_PARALLEL
+        #pragma omp parallel for collapse(2)
+        #endif
         for(size_t y = 0; y < rows; ++y)
         {
             for(size_t x = 0; x < cols; ++x)

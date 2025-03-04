@@ -23,25 +23,10 @@ namespace cellarion
         InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "cellarion");
         rlImGuiSetup(true);
 
-        TraceLog(LOG_INFO, "Here");
-
         SetupImGuiFont();
         SetupImGuiStyle();
 
         m_Canvas = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        /*
-        m_Grid.SetUpdateCallback([](const Grid& oldg, Grid& newg) {
-            size_t rows = oldg.GetRows();
-            size_t cols = oldg.GetCols();
-
-            // epilepsy warning!
-            for(size_t y = 0; y < rows; ++y)
-                for(size_t x = 0; x < cols; ++x)
-                    newg.At(x, y) = (CellState)(rand() % 2);
-        });
-        */
-
         m_Grid.SetUpdateCallback(POSSIBLE_AUTOMATA[s_SelectedAutomata]);
     }
 

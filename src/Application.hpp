@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Grid.hpp"
-#include "raylib.h"
+#include <raylib.h>
 
 namespace cellarion
 {
