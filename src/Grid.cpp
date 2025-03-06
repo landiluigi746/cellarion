@@ -1,5 +1,6 @@
 #include "Grid.hpp"
 #include "CellState.hpp"
+#include "automata/Automata.hpp"
 
 #include <raylib.h>
 #include <vector>
@@ -20,8 +21,8 @@ namespace cellarion
 
         Grid newGrid(m_Rows, m_Cols);
 
-        if(m_UpdateCallback)
-            m_UpdateCallback(*this, newGrid);
+        if(m_Automaton)
+            m_Automaton->Update(*this, newGrid);
 
         m_Cells.swap(newGrid.m_Cells);
     }
@@ -33,10 +34,10 @@ namespace cellarion
                 DrawRectangle((int)(j * cellSize), (int)(i * cellSize), (int)(cellSize), (int)(cellSize), CellStateToColor(m_Cells[i * m_Cols + j]));
     }
 
-    void Grid::SetUpdateCallback(const UpdateCallback& callback)
+    void Grid::SetAutomaton(const AutomatonPtr& automaton)
     {
-        if(callback)
-            m_UpdateCallback = callback;
+        if(automaton)
+            m_Automaton = automaton;
     }
 
     void Grid::Resize(size_t rows, size_t cols)
@@ -59,6 +60,12 @@ namespace cellarion
 
     void Grid::Reset()
     {
-        m_Cells.assign(m_Cells.size(), CellState::DEAD);
+        if(m_Automaton)
+            m_Automaton->Reset(*this);
+    }
+
+    void Grid::DefaultReset()
+    {
+        m_Cells.assign(m_Rows * m_Cols, CellState::DEAD);
     }
 }

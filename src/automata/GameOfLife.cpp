@@ -1,5 +1,5 @@
 #include "automata/Automata.hpp"
-#include "CellState.hpp"
+#include "Grid.hpp"
 
 #include <omp.h>
 
@@ -17,7 +17,7 @@ namespace cellarion
         return count;
     }
 
-    void GameOfLifeUpdate(const Grid& oldGrid, Grid& newGrid) noexcept
+    void GameOfLife::Update(const Grid& oldGrid, Grid& newGrid) noexcept
     {
         size_t rows = oldGrid.GetRows();
         size_t cols = oldGrid.GetCols();
@@ -39,5 +39,10 @@ namespace cellarion
                     newCell = CellState::ALIVE;
             }
         }
+    }
+
+    void GameOfLife::Reset(Grid& grid) noexcept
+    {
+        grid.DefaultReset();
     }
 }

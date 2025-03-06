@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>
+#include "automata/Automata.hpp"
 
 namespace cellarion
 {
@@ -12,4 +12,12 @@ namespace cellarion
 
     static constexpr const char* POSSIBLE_CELL_SIZES_STR[] = { "1", "2", "4", "8", "16", "32" };
     static constexpr size_t POSSIBLE_CELL_SIZES[] = { 1, 2, 4, 8, 16, 32 };
+
+    static constexpr const char* POSSIBLE_AUTOMATA_STR[] = {
+        "Game of Life"
+    };
+
+    static const AutomatonPtr POSSIBLE_AUTOMATA[] = {
+        std::make_shared<GameOfLife>()
+    };
 }

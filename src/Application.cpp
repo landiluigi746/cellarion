@@ -1,11 +1,11 @@
 #include "Application.hpp"
 #include "CellState.hpp"
 #include "Config.hpp"
-#include "automata/Automata.hpp"
 
 #include <raylib.h>
 #include <imgui.h>
 #include <rlImGui.h>
+#include <rlImGuiColors.h>
 #include <cstring>
 #include <chrono>
 
@@ -27,7 +27,7 @@ namespace cellarion
         SetupImGuiStyle();
 
         m_Canvas = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
-        m_Grid.SetUpdateCallback(POSSIBLE_AUTOMATA[s_SelectedAutomata]);
+        m_Grid.SetAutomaton(POSSIBLE_AUTOMATA[s_SelectedAutomata]);
     }
 
     Application::~Application()
@@ -192,6 +192,9 @@ namespace cellarion
 
             ImGui::Text("Settings");
             ImGui::Separator();
+
+            if(ImGui::Combo("Automaton", &s_SelectedAutomata, POSSIBLE_AUTOMATA_STR, (int)IM_ARRAYSIZE(POSSIBLE_AUTOMATA)))
+                m_Grid.SetAutomaton(POSSIBLE_AUTOMATA[s_SelectedAutomata]);
 
             if(ImGui::Combo("Cell size", &s_SelectedCellSize, POSSIBLE_CELL_SIZES_STR, (int)IM_ARRAYSIZE(POSSIBLE_CELL_SIZES)))
                 m_Grid.Resize(CANVAS_HEIGHT / POSSIBLE_CELL_SIZES[s_SelectedCellSize], CANVAS_WIDTH / POSSIBLE_CELL_SIZES[s_SelectedCellSize]);

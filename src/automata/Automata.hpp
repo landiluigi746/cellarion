@@ -1,16 +1,23 @@
 #pragma once
 
-#include "Grid.hpp"
+#include <memory>
 
 namespace cellarion
 {
-    void GameOfLifeUpdate(const Grid& oldGrid, Grid& newGrid) noexcept;
+    class Grid;
 
-    static constexpr const char* POSSIBLE_AUTOMATA_STR[] = {
-        "Game of Life"
+    class Automaton
+    {
+    public:
+        virtual void Update(const Grid& oldGrid, Grid& newGrid) noexcept = 0;
+        virtual void Reset(Grid& grid) noexcept = 0;
     };
 
-    static const Grid::UpdateCallback POSSIBLE_AUTOMATA[] = {
-        &GameOfLifeUpdate
+    using AutomatonPtr = std::shared_ptr<Automaton>;
+
+    class GameOfLife : public Automaton
+    {
+        void Update(const Grid& oldGrid, Grid& newGrid) noexcept override;
+        void Reset(Grid& grid) noexcept override;
     };
 }

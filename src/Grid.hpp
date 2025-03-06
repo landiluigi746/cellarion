@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CellState.hpp"
+#include "automata/Automata.hpp"
 
-#include <functional>
 #include <vector>
 
 namespace cellarion
@@ -10,7 +10,6 @@ namespace cellarion
     class Grid
     {
     public:
-        using UpdateCallback = std::function<void(const Grid&, Grid&)>;
 
         Grid(size_t rows, size_t cols);
 
@@ -18,7 +17,8 @@ namespace cellarion
         void Draw(size_t cellSize);
 
         void Reset();
-        void SetUpdateCallback(const UpdateCallback& callback);
+        void DefaultReset();
+        void SetAutomaton(const AutomatonPtr& automaton);
         void Resize(size_t rows, size_t cols);
         void TogglePause() noexcept { m_Paused = !m_Paused; }
 
@@ -34,6 +34,6 @@ namespace cellarion
         size_t m_Rows;
         size_t m_Cols;
         std::vector<CellState> m_Cells;
-        UpdateCallback m_UpdateCallback;
+        AutomatonPtr m_Automaton;
     };
 }
