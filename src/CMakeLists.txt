@@ -21,6 +21,11 @@ if(${CELLARION_PARALLEL})
         PRIVATE
         CELLARION_PARALLEL=1
     )
+
+    if(MSVC)
+        # We need this in order to use OpenMP 3.0 features
+        target_compile_options(cellarion PRIVATE /openmp:llvm)
+    endif()
 else()
     target_compile_definitions(
         cellarion
