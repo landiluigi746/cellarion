@@ -34,6 +34,23 @@ namespace cellarion
                 DrawRectangle((int)(j * cellSize), (int)(i * cellSize), (int)(cellSize), (int)(cellSize), CellStateToColor(m_Cells[i * m_Cols + j]));
     }
 
+    void Grid::Reset()
+    {
+        if(m_Automaton)
+            m_Automaton->Reset(*this);
+    }
+
+    void Grid::DefaultReset()
+    {
+        m_Cells.assign(m_Rows * m_Cols, CellState::DEAD);
+    }
+
+    void Grid::Randomize()
+    {
+        if(m_Automaton)
+            m_Automaton->Randomize(*this);
+    }
+
     void Grid::SetAutomaton(const AutomatonPtr& automaton)
     {
         if(automaton)
@@ -51,21 +68,10 @@ namespace cellarion
 
         for(size_t i = 0; i < minRows; ++i)
             for(size_t j = 0; j < minCols; ++j)
-                newCells[i * minCols + j] = m_Cells[i * minCols + j];
+                newCells[i * cols + j] = m_Cells[i * minCols + j];
 
         m_Cells = std::move(newCells);
         m_Rows = rows;
         m_Cols = cols;
-    }
-
-    void Grid::Reset()
-    {
-        if(m_Automaton)
-            m_Automaton->Reset(*this);
-    }
-
-    void Grid::DefaultReset()
-    {
-        m_Cells.assign(m_Rows * m_Cols, CellState::DEAD);
     }
 }

@@ -11,6 +11,7 @@ namespace cellarion
     public:
         virtual void Update(const Grid& oldGrid, Grid& newGrid) noexcept = 0;
         virtual void Reset(Grid& grid) noexcept = 0;
+        virtual void Randomize(Grid& grid) noexcept {}
     };
 
     using AutomatonPtr = std::shared_ptr<Automaton>;
@@ -19,5 +20,6 @@ namespace cellarion
     {
         void Update(const Grid& oldGrid, Grid& newGrid) noexcept override;
         void Reset(Grid& grid) noexcept override;
+        void Randomize(Grid& grid) noexcept override;
     };
 }

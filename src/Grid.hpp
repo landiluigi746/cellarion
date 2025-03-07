@@ -18,6 +18,7 @@ namespace cellarion
 
         void Reset();
         void DefaultReset();
+        void Randomize();
         void SetAutomaton(const AutomatonPtr& automaton);
         void Resize(size_t rows, size_t cols);
         void TogglePause() noexcept { m_Paused = !m_Paused; }

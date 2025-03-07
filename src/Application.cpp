@@ -210,6 +210,11 @@ namespace cellarion
             if(ImGui::Button("Reset"))
                 m_Grid.Reset();
 
+            ImGui::SameLine();
+
+            if(ImGui::Button("Randomize"))
+                m_Grid.Randomize();
+
             ImGui::End();
 
             rlImGuiEnd();

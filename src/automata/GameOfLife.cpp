@@ -1,10 +1,15 @@
+#include "CellState.hpp"
 #include "automata/Automata.hpp"
 #include "Grid.hpp"
 
+#include <random>
 #include <omp.h>
 
 namespace cellarion
 {
+    static std::bernoulli_distribution s_Distribution(0.5);
+    static std::default_random_engine s_RandEngine;
+
     inline int GetAliveNeighbours(const Grid& grid, size_t x, size_t y)
     {
         int count = 0;
@@ -44,5 +49,18 @@ namespace cellarion
     void GameOfLife::Reset(Grid& grid) noexcept
     {
         grid.DefaultReset();
+    }
+
+    void GameOfLife::Randomize(Grid& grid) noexcept
+    {
+        size_t rows = grid.GetRows();
+        size_t cols = grid.GetCols();
+
+        #if CELLARION_PARALLEL
+        #pragma omp parallel for collapse(2)
+        #endif
+        for(size_t y = 0; y < rows; ++y)
+            for(size_t x = 0; x < cols; ++x)
+                grid.At(x, y) = (s_Distribution(s_RandEngine)) ? CellState::ALIVE : CellState::DEAD;
     }
 }
