@@ -7,8 +7,9 @@ namespace cellarion
 {
     enum class CellState : uint8_t
     {
-        ALIVE = 0,
-        DEAD = 1
+        ALIVE,
+        DEAD,
+        DYING
     };
 
     inline Color CellStateToColor(CellState state)
@@ -17,6 +18,7 @@ namespace cellarion
         {
             case CellState::ALIVE:  return WHITE;
             case CellState::DEAD:   return BLACK;
+            case CellState::DYING:  return DARKGRAY;
         }
 
         return WHITE;

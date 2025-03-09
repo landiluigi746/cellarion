@@ -22,4 +22,11 @@ namespace cellarion
         void Reset(Grid& grid) noexcept override;
         void Randomize(Grid& grid) noexcept override;
     };
+
+    class BrianBrain : public Automaton
+    {
+        void Update(const Grid& oldGrid, Grid& newGrid) noexcept override;
+        void Reset(Grid& grid) noexcept override;
+        void Randomize(Grid& grid) noexcept override;
+    };
 }

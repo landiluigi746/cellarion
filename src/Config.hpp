@@ -1,6 +1,7 @@
 #pragma once
 
 #include "automata/Automata.hpp"
+#include <memory>
 
 namespace cellarion
 {
@@ -14,10 +15,12 @@ namespace cellarion
     static constexpr size_t POSSIBLE_CELL_SIZES[] = { 1, 2, 4, 8, 16, 32 };
 
     static constexpr const char* POSSIBLE_AUTOMATA_STR[] = {
-        "Game of Life"
+        "Game of Life",
+        "Brian's Brain"
     };
 
     static const AutomatonPtr POSSIBLE_AUTOMATA[] = {
-        std::make_shared<GameOfLife>()
+        std::make_shared<GameOfLife>(),
+        std::make_shared<BrianBrain>()
     };
 }
