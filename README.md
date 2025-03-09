@@ -9,7 +9,7 @@ interface for users to create and run cellular automata on a 2D grid of cells.
 
 ## Index
 
-- [Implemented automata](#implemented automata)
+- [Implemented automata](#implemented-automata)
 - [Usage](#usage)
   - [Compiling](#compiling)
   - [Running](#running)
