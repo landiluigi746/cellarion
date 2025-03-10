@@ -17,7 +17,7 @@ namespace cellarion
 
         for(size_t yy = y - 1; yy <= y + 1; ++yy)
             for(size_t xx = x - 1; xx <= x + 1; ++xx)
-                if(grid.IsPosValid(xx, yy) && (xx != x || yy != y) && grid.At(xx, yy) == CellState::ALIVE)
+                if((xx != x || yy != y) && grid.At(xx, yy) == CellState::ALIVE)
                     ++count;
 
         return count;

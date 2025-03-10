@@ -27,7 +27,6 @@ namespace cellarion
         const CellState& At(size_t x, size_t y) const { return m_Cells[(y % m_Rows) * m_Cols + (x % m_Cols)]; }
 
         bool IsPaused() const noexcept { return m_Paused; }
-        bool IsPosValid(size_t x, size_t y) const noexcept { return (x < m_Cols && y < m_Rows); }
         size_t GetRows() const noexcept { return m_Rows; }
         size_t GetCols() const noexcept { return m_Cols; }
     private:
