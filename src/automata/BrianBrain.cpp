@@ -8,7 +8,7 @@
 
 namespace cellarion
 {
-    static std::uniform_int_distribution<uint8_t> s_Distribution(1, 3);
+    static std::uniform_int_distribution s_Distribution(1, 3);
     static std::default_random_engine s_RandEngine;
 
     inline int GetAliveNeighbours(const Grid& grid, size_t x, size_t y)

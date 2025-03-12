@@ -9,6 +9,8 @@ namespace cellarion
     class Automaton
     {
     public:
+        virtual ~Automaton() {}
+
         virtual void Update(const Grid& oldGrid, Grid& newGrid) noexcept = 0;
         virtual void Reset(Grid& grid) noexcept = 0;
         virtual void Randomize(Grid& grid) noexcept {}
