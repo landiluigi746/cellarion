@@ -16,11 +16,13 @@ namespace cellarion
 
     static constexpr const char* POSSIBLE_AUTOMATA_STR[] = {
         "Game of Life",
-        "Brian's Brain"
+        "Brian's Brain",
+        "Rule 110"
     };
 
     static const AutomatonPtr POSSIBLE_AUTOMATA[] = {
         std::make_shared<GameOfLife>(),
-        std::make_shared<BrianBrain>()
+        std::make_shared<BrianBrain>(),
+        std::make_shared<Rule110>()
     };
 }
