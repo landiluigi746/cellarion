@@ -4,7 +4,10 @@
 
 #include <cstdint>
 #include <random>
+
+#if CELLARION_PARALLEL
 #include <omp.h>
+#endif
 
 namespace cellarion
 {
