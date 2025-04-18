@@ -2,6 +2,7 @@
 #include "automata/Automata.hpp"
 #include "Grid.hpp"
 
+#include <chrono>
 #include <random>
 
 #if CELLARION_PARALLEL
@@ -11,7 +12,7 @@
 namespace cellarion
 {
     static std::bernoulli_distribution s_Distribution(0.5);
-    static std::default_random_engine s_RandEngine;
+    static thread_local std::default_random_engine s_RandEngine(std::chrono::system_clock::now().time_since_epoch().count());
 
     inline CellState GetNextState(const CellState& left, const CellState& center, const CellState& right) noexcept
     {

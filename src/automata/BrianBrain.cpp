@@ -2,6 +2,7 @@
 #include "automata/Automata.hpp"
 #include "Grid.hpp"
 
+#include <chrono>
 #include <cstdint>
 #include <random>
 
@@ -12,7 +13,7 @@
 namespace cellarion
 {
     static std::uniform_int_distribution s_Distribution(1, 3);
-    static std::default_random_engine s_RandEngine;
+    static thread_local std::default_random_engine s_RandEngine(std::chrono::system_clock::now().time_since_epoch().count());
 
     inline int GetAliveNeighbours(const Grid& grid, size_t x, size_t y)
     {
