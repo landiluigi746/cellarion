@@ -48,18 +48,6 @@ After compiling, you can run cellarion by running the following command:
 ```
 
 ### Screenshots
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr);">
-  <div>
-    <p style="text-align: center; margin-top: 8px;">Game Of Life</p>
-    <img src="res/screenshots/GameOfLife.png" alt="Game Of Life" style="width: 100%; height: auto; border-radius: 8px;">
-  </div>
-  <div>
-    <p style="text-align: center; margin-top: 8px;">Brian's Brain</p>
-    <img src="res/screenshots/BrianBrain.png" alt="Brian's Brain" style="width: 100%; height: auto; border-radius: 8px;">
-  </div>
-  <div>
-    <p style="text-align: center; margin-top: 8px;">Rule 110</p>
-    <img src="res/screenshots/Rule110.png" alt="Rule 110" style="width: 100%; height: auto; border-radius: 8px;">
-  </div>
-</div>
+| Game of Life                                   | Brian's Brain                                  | Rule 110                                       |
+|------------------------------------------------|------------------------------------------------|------------------------------------------------|
+| ![gameoflife](res/screenshots/GameOfLife.png)  | ![brianbrain](res/screenshots/BrianBrain.png)  | ![rule110](res/screenshots/Rule110.png)        |
